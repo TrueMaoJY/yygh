@@ -21,10 +21,11 @@ import java.lang.reflect.Method;
 import java.time.Duration;
 
 /**
- * Redis配置类
- *
- * @author qy
- */
+* Description:
+* date: 2023/2/20 10:10
+* @author: MaoJY
+* @since JDK 1.8
+*/
 @Configuration
 @EnableCaching
 public class RedisConfig {

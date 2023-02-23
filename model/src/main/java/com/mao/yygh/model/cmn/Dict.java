@@ -60,7 +60,12 @@ public class Dict {
     @ApiModelProperty(value = "编码")
     @TableField("dict_code")
     private String dictCode;
-
+    /**
+    * Description:表格树形数据需要该属性，但是表中无该属性
+    * date: 2023/2/11 14:13
+    * @author: MaoJY
+    * @since JDK 1.8
+    */
     @ApiModelProperty(value = "是否包含子节点")
     @TableField(exist = false)
     private boolean hasChildren;
