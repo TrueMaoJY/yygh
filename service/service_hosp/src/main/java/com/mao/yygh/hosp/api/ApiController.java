@@ -13,9 +13,12 @@ import com.mao.yygh.common.result.ResultCodeEnum;
 import com.mao.yygh.hosp.service.DepartmentService;
 import com.mao.yygh.hosp.service.HospitalService;
 import com.mao.yygh.hosp.service.HospitalSetService;
+import com.mao.yygh.hosp.service.ScheduleService;
 import com.mao.yygh.model.hosp.Department;
 import com.mao.yygh.model.hosp.Hospital;
+import com.mao.yygh.model.hosp.Schedule;
 import com.mao.yygh.vo.hosp.DepartmentQueryVo;
+import com.mao.yygh.vo.hosp.ScheduleQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -47,6 +50,8 @@ public class ApiController {
     private HospitalSetService hospitalSetService;
     @Autowired
     private DepartmentService departmentService;
+    @Autowired
+    private ScheduleService scheduleService;
     /**
      * @author MAOjy
      * @description 查询医院
@@ -125,6 +130,42 @@ public class ApiController {
         Map<String, Object> map = HttpRequestHelper.switchMap(request.getParameterMap());
         signKeyVerification(map);
         departmentService.removeDepartment(map);
+        return Result.ok();
+    }
+    @PostMapping("saveSchedule")
+    @ApiOperation(value = "上传排班")
+    public Result saveSchedule(HttpServletRequest request){
+        Map<String, Object> map = HttpRequestHelper.switchMap(request.getParameterMap());
+        signKeyVerification(map);
+        //签名校验
+        scheduleService.save(map);
+        return  Result.ok();
+    }
+    @PostMapping("/schedule/list")
+    @ApiOperation(value = "查询排班")
+    public Result scheduleList(HttpServletRequest request){
+        Map<String, Object> map = HttpRequestHelper.switchMap(request.getParameterMap());
+        signKeyVerification(map);
+        //page
+        Integer page = Integer.parseInt((String) map.get("page"));
+        page=page==null?1:page;
+        //limit
+        Integer limit = Integer.parseInt((String) map.get("limit"));
+        limit =limit==null?10:limit;
+        //条件查询对象的封装
+        ScheduleQueryVo queryVo = new ScheduleQueryVo();
+        queryVo.setHoscode((String) map.get("hoscode"));
+        queryVo.setDepcode((String) map.get("depcode"));
+        //分页查询
+        Page<Schedule> list=scheduleService.selectPage(page,limit,queryVo);
+        return Result.ok(list);
+    }
+    @PostMapping("/schedule/remove")
+    @ApiOperation(value = "删除排班")
+    public Result removeSchedule(HttpServletRequest request){
+        Map<String, Object> map = HttpRequestHelper.switchMap(request.getParameterMap());
+        signKeyVerification(map);
+        scheduleService.removeSchedule(map);
         return Result.ok();
     }
 }

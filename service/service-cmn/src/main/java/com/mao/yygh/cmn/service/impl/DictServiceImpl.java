@@ -1,6 +1,7 @@
 package com.mao.yygh.cmn.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mao.yygh.cmn.listener.DictListener;
@@ -8,6 +9,7 @@ import com.mao.yygh.cmn.mapper.DictMapper;
 import com.mao.yygh.cmn.service.DictService;
 import com.mao.yygh.model.cmn.Dict;
 import com.mao.yygh.vo.cmn.DictEeVo;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,7 +34,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
 
     /**
      * @Author MAOjy
-     * @Description //TODO
+     * @Description //TODO 查询所有parentId=id的记录
      * @Date 14:29 2023/2/11
      * @Param [id]
      * @return [java.lang.Long]
@@ -91,7 +93,47 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
             e.printStackTrace();
         }
     }
-
+    @Cacheable(value = "dict",keyGenerator = "keyGenerator")
+    @Override
+    public String getNameByParentDictCodeAndValue(String parentDictCode, String value) {
+        if (StringUtils.isEmpty(parentDictCode)) {
+            Dict dict = baseMapper.selectOne(new QueryWrapper<Dict>().eq("value", value));
+            if(dict!=null) {
+                return dict.getName();
+            }
+        }else {
+            //根据dict_code查到parent_id
+            Dict parentDict = this.getDictByDictCode(parentDictCode);
+            if(parentDict==null) {
+                return "";
+            }
+            Dict dict = baseMapper.selectOne(new QueryWrapper<Dict>().eq("parent_id", parentDict.getId())
+                    .eq("value", value));
+            if (dict != null) {
+                return dict.getName();
+            }
+        }
+        return "";
+    }
+    /**
+     * @author MaoJY
+     * @description 根据dictcode查询id，查询所有parentId=id的记录
+     * @date 15:56 2023/3/16
+     * @param [dictcode]
+     * @return java.util.List<com.mao.yygh.model.cmn.Dict>
+     */
+    @Override
+    public List<Dict> findByDictCode(String dictcode) {
+        Dict dict = this.getDictByDictCode(dictcode);
+        if (dict == null) {
+            return  null;
+        }
+        return  this.findChildData(dict.getId());
+    }
+    private Dict getDictByDictCode(String dictcode){
+        Dict parentDict = baseMapper.selectOne(new QueryWrapper<Dict>().eq("dict_code", dictcode));
+        return parentDict;
+    }
     private boolean hasChildren(Long id){
         QueryWrapper<Dict> parentId = new QueryWrapper<Dict>().eq("parent_id", id);
         return baseMapper.selectCount(parentId)>0;

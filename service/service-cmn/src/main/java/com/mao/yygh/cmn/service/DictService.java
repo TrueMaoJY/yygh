@@ -44,5 +44,9 @@ public interface DictService extends IService<Dict> {
      * @return void
      */
     void importData(MultipartFile file);
+
+    String getNameByParentDictCodeAndValue(String parentDictCode, String value);
+
+    List<Dict> findByDictCode(String dictcode);
 }
 

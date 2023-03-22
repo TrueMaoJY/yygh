@@ -10,7 +10,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mao.yygh.common.result.Result;
 import com.mao.yygh.cmn.service.DictService;
 import com.mao.yygh.model.cmn.Dict;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,6 +60,45 @@ public class DictController  {
     public Result findChildData(@PathVariable Long id){
        List<Dict> list= dictService.findChildData(id);
         return Result.ok(list);
+    }
+    /**
+     * @author MaoJY
+     * @description 根据dict-code-》类别，value查询名称 xx医院
+     * @date 15:42 2023/3/16
+     * @param [parentDictCode, value]
+     * @return java.lang.String
+     */
+    @ApiOperation(value = "获取数据字典名称1")
+    @GetMapping("/getName/{parentDictCode}/{value}")
+    public String getName(@PathVariable("parentDictCode") String parentDictCode,
+                          @PathVariable("value") String value){
+        return dictService.getNameByParentDictCodeAndValue(parentDictCode,value);
+    }
+    /**
+     * @author MaoJY
+     * @description 根据value查询名称 xxx省？
+     * @date 15:44 2023/3/16
+     * @param [value]
+     * @return java.lang.String
+     */
+    @ApiOperation(value = "获取数据字典名称2")
+    @GetMapping(value = "/getName/{value}")
+    public String getName(
+            @ApiParam(name = "value", value = "值", required = true)
+            @PathVariable("value") String value) {
+        return dictService.getNameByParentDictCodeAndValue("", value);
+    }
+    /**
+     * @author MaoJY
+     * @description 预先查出所有省份，选择省份后可以显示下级节点
+     * @date 15:50 2023/3/16
+     * @param [dictcode]
+     * @return com.mao.yygh.common.result.Result
+     */
+    @ApiOperation(value = "根据dictcode获取下级节点")
+    @GetMapping("/findByDictCode/{dictCode}")
+    public Result findByDictCode(@PathVariable("dictCode")String dictcode){
+        return Result.ok(dictService.findByDictCode(dictcode));
     }
 
     /**

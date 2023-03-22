@@ -3,6 +3,8 @@ package com.mao.yygh.hosp;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -13,6 +15,8 @@ import org.springframework.context.annotation.ComponentScan;
  * 与本模块包名称不一致，需要设置包扫描路径
  */
 @SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients(basePackages = "com.mao")
 //@MapperScan(basePackages = "com.mao.yygh.hosp.mapper")
 @ComponentScan(basePackages = "com.mao")
 public class ServiceHospApplication {
