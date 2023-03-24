@@ -3,6 +3,8 @@ package com.mao.yygh.hosp.repository;
 import com.mao.yygh.model.hosp.Department;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
+
 /**
  * @InterfaceName DepartmentRepository
  * @Description TODO
@@ -12,6 +14,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface DepartmentRepository extends MongoRepository<Department,String> {
     Department getDepartmentByHoscodeAndDepcode(String hoscode, String depcode);
-
-
+    List<Department> findAllByHoscode(String hoscode);
+    Department findDepartmentByHoscodeAndDepcode(String hoscode, String depcode);
 }
