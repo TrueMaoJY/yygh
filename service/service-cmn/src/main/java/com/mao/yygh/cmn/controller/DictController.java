@@ -31,7 +31,7 @@ import java.util.List;
 @Api(tags = "数据字典")
 @RestController
 @RequestMapping("/admin/cmn/dict")
-@CrossOrigin
+//@CrossOrigin
 public class DictController  {
     /**
      * 服务对象

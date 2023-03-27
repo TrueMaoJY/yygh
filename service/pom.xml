@@ -12,9 +12,10 @@
     <artifactId>service</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>service_user</module>
-        <module>service_hosp</module>
+        <module>service-user</module>
+        <module>service-hosp</module>
         <module>service-cmn</module>
+        <module>service-msm</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
